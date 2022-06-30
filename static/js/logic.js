@@ -32,14 +32,14 @@ function createFeatures(earthquakeData) {
 
     }
 
-    function geojsonMarkerOptions(features) {
+    function geojsonMarkerOptions(feature) {
       return {
-          radius: features.properties.mag * 3 ,
-          fillColor: "rgba(0, 0, 0, 1)",
+          radius: feature.properties.mag * 4 ,
+          fillColor: alterColor(feature.geometry.coordinates[2]),
           color: "rgba(0, 0, 0, 1)",
           weight: 1,
           opacity: 1,
-          fillOpacity:0.8,
+          fillOpacity:3,
       }
     };
 
@@ -47,12 +47,11 @@ function createFeatures(earthquakeData) {
       //key value with alterColor(feature.geometry.coordinates[2]). Figure out numbers to incriment color change,
       //then inside quotes goes our colors. Use this link for colors: https://hihayk.github.io/scale/#3/3/50/80/-51/67/20/14/1D9A6C/29/154/108/white
         function alterColor(depth) {
-        return  depth > number ?'':
-                depth > number ?'':
-                depth > number ?'':
-                depth > number ?'':
-                depth > number ?'':
-                                '';
+        return  depth > 30 ?'#184A3A':
+                depth > 15 ?'#2F8686':
+                depth > 10 ?'#4997C3':
+                depth > 2  ?'#8FE8FF':
+                            '#BDFFF3';
     }
 
   // Save the earthquake data in a variable.
@@ -103,7 +102,7 @@ function createMap(earthquakes) {
 
   // Create a new map.
   // Edit the code to add the earthquake data to the layers.
-  var myMap = L.map("map", {
+  var Danielmap = L.map("map", {
     center: [
       37.09, -95.71
     ],
@@ -111,10 +110,33 @@ function createMap(earthquakes) {
     layers: [street, earthquakes]
   });
 
+  //Compare this code with how it looked in Day 2:Activity 4 from WEEK 15
+  var legend = L.control({position: 'bottomright'});
+
+
+    legend.onAdd = function (map) {
+
+    let div = L.DomUtil.create('div', 'info legend'),
+        grades = feature.geometry.coordinates[2], //this is an array from our geojson.
+        //Above, we passed through a java rounding function. .map works on an array and returns and array.
+        labels = [];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < grades.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + getColor(i) + '"></i> ' +
+            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+    }
+
+    return div;
+};
+
+legend.addTo(Danielmap)
+ 
   // Create a layer control that contains our baseMaps.
   // Be sure to add an overlay Layer that contains the earthquake GeoJSON.
   L.control.layers(baseMaps, overlayMaps, {
     collapsed: false
-  }).addTo(myMap);
+  }).addTo(DanielMap);
 
 }
