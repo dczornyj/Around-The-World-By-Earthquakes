@@ -34,7 +34,7 @@ function createFeatures(earthquakeData) {
 
     function geojsonMarkerOptions(feature) {
       return {
-          radius: feature.properties.mag * 4 ,
+          radius: feature.properties.mag * 3 ,
           fillColor: alterColor(feature.geometry.coordinates[2]),
           color: "rgba(0, 0, 0, 1)",
           weight: 1,
@@ -50,7 +50,7 @@ function createFeatures(earthquakeData) {
         return  depth > 30 ?'#184A3A':
                 depth > 15 ?'#2F8686':
                 depth > 10 ?'#4997C3':
-                depth > 2  ?'#8FE8FF':
+                depth > 0  ?'#8FE8FF':
                             '#BDFFF3';
     }
 
@@ -110,6 +110,24 @@ function createMap(earthquakes) {
     layers: [street, earthquakes]
   });
 
+  //color for first increment that is part of string in line 126.
+  function Colorlegend(i) {
+    if (i==0)
+    return '#BDFFF3';
+    
+    else if (i==1) 
+    return '#8FE8FF';
+    
+    else if (i==2)
+    return '#4997C3';
+
+    else if (i==3)
+    return '#2F8686';
+
+    else 
+    return '#184A3A';
+  }
+
   //Compare this code with how it looked in Day 2:Activity 4 from WEEK 15
   var legend = L.control({position: 'bottomright'});
 
@@ -117,16 +135,29 @@ function createMap(earthquakes) {
     legend.onAdd = function (map) {
 
     let div = L.DomUtil.create('div', 'info legend'),
-        grades = feature.geometry.coordinates[2], //this is an array from our geojson.
+        depth_increments = ['-10-2',
+                             '2-10',
+                             '10-15',
+                             '15-30',
+                             '30+'], //this is an array from our geojson. create different
+        
         //Above, we passed through a java rounding function. .map works on an array and returns and array.
         labels = [];
 
     // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < grades.length; i++) {
-        div.innerHTML +=
-            '<i style="background:' + getColor(i) + '"></i> ' +
-            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-    }
+    // for (var i = 0; i < depth_increments.length; i++) {
+    //     div.innerHTML +=
+    //         '<i style="background:' + Colorlegend(i) + '"></i> ' +
+    //         depth_increments[i] + (depth_increments[i + 1] ? '&ndash;' + Colorlegend(i) + '<br>' : '+');
+    // }
+
+        for (let i=0; i < depth_increments.length; i++) {
+          labels.push( 
+              '<i class="square" style="background:' + Colorlegend(i) + '"></i>'+ depth_increments[i] + '')
+      }
+      div.innerHTML = labels.join('<br>');
+
+
 
     return div;
 };
@@ -137,6 +168,6 @@ legend.addTo(Danielmap)
   // Be sure to add an overlay Layer that contains the earthquake GeoJSON.
   L.control.layers(baseMaps, overlayMaps, {
     collapsed: false
-  }).addTo(DanielMap);
+  }).addTo(Danielmap);
 
 }
