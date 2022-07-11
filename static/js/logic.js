@@ -4,6 +4,7 @@ var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_we
 
 // Perform a GET request to the query URL.
 d3.json(queryUrl).then(function (data) {
+  console.log(data)
   console.log(data.features);
   // Using the features array sent back in the API data, create a GeoJSON layer, and add it to the map.
 
@@ -20,12 +21,11 @@ function createFeatures(earthquakeData) {
 
   //create a function that will pass info on each pin
   function onEachFeature(feature, layer) {
-    layer.bindPopup(`<h3>${feature.properties.place}</h3>
-                     <hr> Magnitude: ${feature.properties.mag}</hr>
-                      Depth:  ${feature.geometry.coordinates[2]} km`
+    layer.bindPopup(`<h3>${feature.properties.place}</h3><hr/>
+                     <h5> Magnitude: ${feature.properties.mag}</h5>
+                     <h5> Depth:  ${feature.geometry.coordinates[2]} km<h5>` 
                 
     )
-    console.log(feature.geometry.coordinates[2])
   }
 
     function alterColor(features) {
@@ -34,7 +34,7 @@ function createFeatures(earthquakeData) {
 
     function geojsonMarkerOptions(feature) {
       return {
-          radius: feature.properties.mag * 3 ,
+          radius: feature.properties.mag * 4 ,
           fillColor: alterColor(feature.geometry.coordinates[2]),
           color: "rgba(0, 0, 0, 1)",
           weight: 1,
@@ -124,7 +124,7 @@ function createMap(earthquakes) {
     else if (i==3)
     return '#2F8686';
 
-    else 
+    else  
     return '#184A3A';
   }
 
@@ -135,14 +135,14 @@ function createMap(earthquakes) {
     legend.onAdd = function (map) {
 
     let div = L.DomUtil.create('div', 'info legend'),
-        depth_increments = ['-10-2',
-                             '2-10',
+        depth_increments = ['-10-0',
+                             '0-10',
                              '10-15',
                              '15-30',
                              '30+'], //this is an array from our geojson. create different
         
         //Above, we passed through a java rounding function. .map works on an array and returns and array.
-        labels = [];
+        labels= ["Depth of Earthquake (km)"];
 
     // loop through our density intervals and generate a label with a colored square for each interval
     // for (var i = 0; i < depth_increments.length; i++) {
@@ -153,9 +153,9 @@ function createMap(earthquakes) {
 
         for (let i=0; i < depth_increments.length; i++) {
           labels.push( 
-              '<i class="square" style="background:' + Colorlegend(i) + '"></i>'+ depth_increments[i] + '')
+              '<i class="rectangle" style="background:' + Colorlegend(i) + '"></i>'+ depth_increments[i] + '')
       }
-      div.innerHTML = labels.join('<br>');
+      div.innerHTML = labels.join('<h3>');
 
 
 
