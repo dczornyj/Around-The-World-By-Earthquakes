@@ -50,7 +50,8 @@ rthquakes/feed/v1.0/geojson.php) page and pick a data set to visualize. When you
 
 
 ## Example of what the visualization provides for a recorded earthquake
-![Screenshot (219)](https://user-images.githubusercontent.com/101612220/202092726-789dcdc2-1253-4cce-9808-ba050d95cdd0.png)
+![Screenshot (219)](https://user-images.githubusercontent.com/101612220/202094397-6e3adc87-4801-4169-b9a1-28e2ea549f9c.png)
+
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
